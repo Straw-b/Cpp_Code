@@ -186,7 +186,7 @@ int main()
 
 
 
-#if 1
+#if 0
 void Swap(int& left, int &right)
 {
 	int temp = left;
@@ -209,6 +209,54 @@ int main()
 	Swap(&a, &b);
 	Swap(a, b);
 
+	return 0;
+}
+#endif
+
+
+
+
+#if 1
+int main()
+{
+	int* p;
+
+	int a = 10;
+	int& ra = a;
+	ra++;   // 注意：在底层处理上，编译器会对ra解引用找到a
+
+
+	int b = 20;
+
+	p = &a;
+	p++;   // 指针只有指向一段连续的空间，++/--才有意义
+
+	p = &b;
+
+	int* const cp = &a;
+	// cp = &b;
+
+	char c = 'a';
+	char* pc = &c;
+	char& rc = c;
+
+	cout << sizeof(pc) << endl;  // 4  在32平台下，任何指针都占有4个字节
+	cout << sizeof(rc) << endl;  // 1  引用类型实际就是其引用实体类型的大小
+
+
+	// 有多级指针
+	int* p1 = NULL;
+	int** p2 = NULL;
+	int*** p3 = NULL;
+
+
+	// 没有多级引用--->其实就没有多级引用这个名词
+	int d = 10;
+	int& rd = d;
+
+	//int&& rrd = d;
+	// 右值引用--->C++11
+	int&& rrd = 10;
 	return 0;
 }
 #endif
