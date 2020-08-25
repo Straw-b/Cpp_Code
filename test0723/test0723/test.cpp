@@ -3,7 +3,6 @@ using namespace std;
 
 
 
-
 #if 0
 // 引用可以达到和指针类似的效果，比如：都可以通过形参来改变外部的实参
 // 问题：指针和引用有什么区别呢？
@@ -155,7 +154,7 @@ int main()
 //在C++中，对于宏函数建议尽量使用内联函数进行代替
 
 
-#if 1
+#if 0
 #define MUL(a,b) ((a)*(b))
 
 int Mul(int left, int right)
@@ -184,17 +183,18 @@ int main()
 #endif
 
 
+
 //内联函数
 //优点：
 //1. 因为是函数，参数有类型，因此在编译阶段会进行参数类型检测，代码安全性高
-//2. 在Debug模式下默认不会展开，可以进行调试-- - 也可以通过对编译器设置来验证到底是否展开
+//2. 在Debug模式下默认不会展开，可以进行调试---> 也可以通过对编译器设置来验证是否到底展开
 //3. 写时候期间不用向宏函数导出加括号，实现简单
 //4. 不会有副作用
 //5. 在编译阶段已经展开了，少了函数调用的开销，可以提高程序的运行效率
 //缺点：每个使用内联函数的位置几乎都会被展开，会造成代码膨胀
 
 
-#if 1
+#if 0
 // 在C++中，被inline关键字修饰的函数称为内联函数
 // 内联函数特性：在编译时，编译器会对内联函数进行展开，少了函数调用的开销，可以提高程序的运行效率
 
@@ -209,15 +209,11 @@ inline int Max(int left, int right)
 	return left > right ? left : right;
 }
 
-
-/*
-release模式下，main函数相当于称为了以下的代码
-int main()
-{
-return 0;
-}
-
-*/
+//Release模式下，main函数相当于称为了以下的代码
+//int main()
+//{
+//    return 0;
+//}
 
 #include "InlineFunc.h"
 
@@ -231,7 +227,8 @@ int main()
 	// 如果没有展开，sum = Add(a,b);在该条语句中调用Add函数，有call Add
 	// 如果展开，编译器已经用Add函数的函数体替换了函数调用
 
-	// Debug模式，调试模式，Debug模式下情况下，默认是不会展开的---因为Debug为调试模式
+	// Debug模式下，默认是不会展开的---因为Debug为调试模式
+	// Debug模式，调试模式
 	// 如果展开，就不能调试
 
 	// Release模式，发布程序时所采用的模式，Release模式编译器会对代码进行大量的优化，让程序在运行时速度更快
@@ -243,12 +240,232 @@ int main()
 	cout << Max(++b, a) << endl;
 
 	// 因为Sub函数被inline修饰，而且定义和声明分离开
-	// Sub具有文件作用域，只能在其定义文件中使用
-	// 在其他文件中不能使用
-	// 使用时，会发生链接错误---因为编译器在编译时，发现Sub是内联函数，并没有给Sub函数生成具体函数体
+	// Sub具有文件作用域，只能在其定义的文件中使用，在其他的文件中不能使用
+	// 使用时，会发生链接错误--->因为编译器在编译时，发现Sub是内联函数，并没有给Sub函数生成具体函数体
 	Sub(a, b);
 	return 0;
 }
 #endif
 
 
+
+// C语言中有auto的关键字
+// auto关键字专门用来修饰函数中定义的变量，表明：该变量为自动存储类型的变量，即该变量会被自动销毁掉
+
+// 因此C++11中，废除了auto在C语言中的作用，给全新的含义:
+// auto不再是一个存储类型指示符，而是作为一个新的类型指示符来指示编译器
+// auto声明的变量必须由编译器在编译时推导变量的类型
+
+
+#if 0
+
+int Add(int left, int right)
+{
+	return left + right;
+}
+
+int main()
+{
+	// auto int a = 10;  // 局部变量，而局部变量在函数结束时本来就会自动销毁
+
+	auto a = 10;
+	auto b = "1234";
+	auto c = 12.34;
+
+	// 注意：auto不是类型
+	// auto此时只是一个占位符
+	// 在编译器编译时，编译器推演d的初始化表达式a+10的类型为int，最终用int替换d之前的auto
+	auto d = a + 10;   // 编译器编译完成后  auto d = a + 10;--->int d = a + 10;
+	// cout << sizeof(auto) << endl; // 不能将 sizeof 应用于包含“auto”的类型
+	
+	auto ret = Add(10, 20);
+
+
+	cout << typeid(a).name() << endl;
+	cout << typeid(b).name() << endl;
+	cout << typeid(c).name() << endl;
+	cout << typeid(d).name() << endl;
+	cout << typeid(ret).name() << endl;
+
+	// 在用auto定义变量时，必须对变量进行初始化
+	// 因为：编译器在编译期间，要根据变量的初始化表达式来推演该变量的实际类型
+	// 将该实际类型推演出来之后替换auto
+	// auto e;
+	return 0;
+}
+#endif
+
+
+
+
+#if 0
+void TestAuto1()
+{
+	auto a = 10;
+
+	// 使用auto定义指针类型变量时，加不加*都无所谓
+	auto pa = &a;   // auto---> 替换为int*
+	auto *pb = &a;  // auto---> 替换为int
+	cout << typeid(pa).name() << endl;
+	cout << typeid(pb).name() << endl;
+
+	// 注意：auto定义引用类型变量时，auto之后必须要&
+	auto& ra = a;   // 让ra引用a
+	auto rra = a;   // 注意：rra并不是a的引用，只是定义了一个rra的变量，该变量使用a来进行初始阿化
+
+	cout << &a << endl;
+	cout << &ra << endl;
+	cout << &rra << endl;
+}
+
+void TestAuto2()
+{
+	// 使用auto在一行定义多个变量时，每个变量的初始化表达式的类型必须一致
+	auto a = 1, b = 2, c = a + b;
+
+	//auto d = 12.34, e = 10;
+	// 编译器在推演auto的实际类型时：
+	// 12.34--->double，auto应该为double
+	// 10--->int，auto应该为int类型
+	// 就有歧义：编译器现在就不知道auto到底是应该给成int类型呢还是应该给成double类型，即存在二义性
+}
+
+// 注意：auto不能用来声明函数的参数
+// 因为函数的参数在定义没有初始化，既然没有初始化，编译器也无法推演形参的实际类型
+// 在用auto定义形参时，给了缺省值之后为什么也不行？
+// 原因：因为不是所有函数的参数都有默认值
+
+void TestAutoParam(auto a = 10) // 参数不能为包含“auto”的类型
+{
+	a++;
+}
+
+void TestAutoArray()
+{
+	int array1[10];
+	int array2[] = { 1, 2, 3 };   // array2是一个整形的数组，里面包含3个元素
+	int array3[10] = { 1, 2, 3 }; // array3是一个整形的数组，里面包含10个元素，前三个元素为1 2 3，其余元素为0
+
+	// 注意：auto不能用来定义数组
+	// auto array4[] = { 1, 2, 3 }; // 数组的元素类型不能是包含“auto”的类型
+}
+
+int main()
+{
+	TestAuto1();
+	return 0;
+}
+#endif
+
+
+
+
+#if 0
+int main()
+{
+	// [array, array+sizeof(array)/sizeof(array[0]))
+	// 问题：既然数组定义好了之后，数组的范围是确定的
+	// 那么用户在访问整个数组或者对整个数组进行操作时，能否不用给范围，让编译器自己进行确定
+	int array[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 };
+
+	// 打印数组中的元素
+	// 有一个不太好的点：
+	// 在对数组操作时，必须要依靠用户来确定数组的范围
+	// 但是：数组定义好了之后，范围就是确定的
+	for (int i = 0; i < sizeof(array) / sizeof(array[0]); ++i)
+		cout << array[i] << " ";
+	cout << endl;
+
+	// 对数组中每个元素*2
+	for (int i = 0; i < sizeof(array) / sizeof(array[0]); ++i)
+		array[i] *= 2;
+	cout << endl;
+
+	// 打印数组的元素
+	for (int* p = array; p < array + sizeof(array) / sizeof(array[0]); ++p)
+		cout << *p << " ";
+	cout << endl;
+
+	return 0;
+}
+#endif
+
+
+
+
+#if 0
+
+// 范围for循环 + 配合auto
+int main()
+{
+	// [array, array+sizeof(array)/sizeof(array[0]))
+	// 那么用户在访问整个数组或者对整个数组进行操作时，能否不用给范围，让编译器自己进行确定
+	int array[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 };
+
+	// 打印数组--e:实际就是array数组中每个元素的一份拷贝
+	for (auto e : array)
+	{
+		// e *= 2; 只是为了验证e改变之后，数组中的对应元素是否发生改变--->验证e是否为数组中每个元素的拷贝
+		cout << e << " ";
+	}
+	cout << endl; // 换行
+
+
+	// 对数组中每个元素乘2的操作
+	// e就是数组中每个元素的别名
+	for (auto& e : array)
+		e *= 2;
+
+	for (auto& e : array)
+		cout << e << " ";
+	cout << endl;
+
+	return 0;
+}
+
+//// 错误
+//// 因为数组名作为函数的参数时，实际已经退还成一个指针了
+//void TestFor(int array[])  // void TestFor(int* array)
+//{
+//	for (auto e : array)   // array表示的空间的范围不确定
+//		cout << e << " ";
+//	cout << endl;
+//}
+#endif
+
+
+
+
+void TestFunc(int a)
+{
+	cout << "TestFunc(int)" << endl;
+}
+
+void TestFunc(int* pa)
+{
+	cout << "TestFunc(int*)" << endl;
+}
+
+int main()
+{
+	int a = 10;
+	int* pa = &a;
+
+	int* pb = NULL;
+
+	TestFunc(0);
+	// 理论上应该调用整形的TestFunc函数
+
+	TestFunc(NULL);
+	// NULL是一个空值指针，理论上应该调用指针类型的TestFunc函数            
+	// 该位置实际调用的是整形类型的TestFunc函数
+	// #define NULL 0
+	// TestFunc(NULL)--->在预处理阶段--->TestFunc(0)
+	// 逻辑不符合
+
+	TestFunc(nullptr); // 不需要包含头文件
+
+	cout << sizeof(nullptr) << endl;
+
+	return 0;
+}
