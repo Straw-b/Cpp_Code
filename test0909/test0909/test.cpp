@@ -3,7 +3,38 @@
 using namespace std;
 
 
-#if 1
+#if 0
+// 复数类
+class Complex
+{
+public:
+	Complex(double real, double image)
+	{
+		_real = real;
+		_image = image;
+	}
+
+	Complex& operator=(const Complex& c);
+	bool operator>(const Complex& c);
+	bool operator<(const Complex& c);
+	bool operator==(const Complex& c);
+	bool operator!=(const Complex& c);
+	bool operator+(const Complex& c);
+	bool operator-(const Complex& c);
+	bool operator*(const Complex& c);
+	bool operator/(const Complex& c);
+
+	// 复数类的构造函数 + 拷贝构造函数 + 赋值运算符函数--->三个函数可以不用实现
+private:
+	double _real; // 实部
+	double _image; // 虚部
+};
+#endif
+
+
+
+
+#if 0
 class Date
 {
 public:
@@ -43,6 +74,23 @@ public:
 		cout << "~Date():" << this << endl;
 	}
 
+	// operator&
+	Date* GetAddr()
+	{
+		return this;
+	}
+
+	Date* operator&()
+	{
+		return this;
+	}
+
+	const Date* operator&()const
+	{
+		cout << this << endl;
+		return this;
+	}
+
 private:
 	int _year;
 	int _month;
@@ -55,7 +103,6 @@ Date TestDate1(Date d)
 	temp = d;
 	return temp;
 }
-
 void Test1()
 {
 	Date d1(2020, 8, 8);
@@ -69,18 +116,25 @@ Date& TestDate2(Date& d)
 	temp = d;
 	return d;
 }
-
 void Test2()
 {
 	Date d1(2020, 8, 8);
 	Date d2(2020, 8, 9);
 	d1 = TestDate2(d2);
+
+	cout << &d1 << endl;
+	cout << &d2 << endl;
 }
 
 int main()
 {
+	Date d1(2020, 9, 9); 
+	const Date d2(2020, 9, 9); 
+	cout << &d1 << endl;// 调用Date* operator&()
+	cout << &d2 << endl;// 调用const Date* operator&()const
+
 	// Test1();
-	Test2();
+	// Test2();
 	return 0;
 }
 #endif
@@ -88,29 +142,45 @@ int main()
 
 
 
-// 复数类
-class Complex
+class Date
 {
 public:
-	Complex(double real, double image)
+	Date(int year, int month, int day) // 构造函数
 	{
-		_real = real;
-		_image = image;
+		// 注意：构造函数体中是赋值而不是初始化
+		_year = year;
+		_month = month;
+		_day = day;
+		// _day = 2020;
+		// ra = year;
 	}
 
-	Complex& operator=(const Complex& C);
-	bool operator>(const Complex& C);
-	bool operator<(const Complex& C);
-	bool operator==(const Complex& C);
-	bool operator!=(const Complex& C);
-	bool operator+(const Complex& C);
-	bool operator-(const Complex& C);
-	bool operator*(const Complex& C);
-	bool operator/(const Complex& C);
+	void SetYear(int year)
+	{
+		_year = year;
+	}
 
-	// 复数类的构造函数 + 拷贝构造函数 + 赋值运算符函数--->三个函数可以不用实现
+	// 该方法的本质：获取当前日期中的年份
+	// 在获取期间是不能对当前对象中成员进行修改
+	// 为了保证安全性，禁止this指针指向的对象被修改，用const修饰
+	// const修饰的成员函数：称为const成员函数
+	// const本质：修饰this指针指向的对象，表明const成员函数中不能修改类成员变量
+	int GetYear()const
+	{
+		//++_year;
+		return _year;
+	}
+
 private:
-	double _real; // 实部
-	double _image; // 虚部
-
+	int _year;
+	int _month;
+	int _day;
+	// int& ra;
 };
+
+int main()
+{
+	Date d(2020, 9, 9);
+	cout << d.GetYear() << endl;
+	return 0;
+}
