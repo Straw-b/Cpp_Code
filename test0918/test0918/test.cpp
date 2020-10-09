@@ -2,10 +2,46 @@
 using namespace std;
 
 
+#if 0
+class Test
+{
+public:
+	Test(int t)
+		: _t(t)
+	{}
 
-// 构造函数语法中说：构造函数没有返回值类型
-// 构造函数到底有返回值吗？
+	/*Test& operator=(const Test& t)
+	{
+		if (this != &t)
+		{
+			_t = t._t;
+		}
+		return *this;
+	}*/
 
+	int _t;
+};
+
+//Test& operator=( Test& t)// 赋值运算符重载必须写成类的成员函数
+//{
+//	return t;
+//}
+// 注意：不是说所有的运算符重载都要写成类的成员函数，比如：重载的输出运算符
+
+int main()
+{
+	Test t1(10);
+	Test t2(20);
+
+	t1 = t2;
+	return 0;
+}
+#endif
+
+
+
+
+#if 0
 class Test
 {
 public:
@@ -23,12 +59,53 @@ public:
 	int _t;
 };
 
+Test t1(10);
+
+void TestStatic()
+{
+	static Test t4(40);
+}
+
+int main()
+{
+	Test t2(20);
+	Test t3(30);
+	TestStatic();
+	TestStatic();
+	TestStatic();
+
+	//Test t4(t2);
+	return 0;
+}
+#endif
+
+
+
+
+#if 0
+// 构造函数语法中说：构造函数没有返回值类型
+// 构造函数到底有返回值吗？
+class Test
+{
+public:
+	Test(int t)
+		: _t(t)
+	{
+		cout << "Test(int):" << this << " " << _t << endl;
+	}
+
+	~Test()
+	{
+		cout << "~Test():" << this << " " << _t << endl;
+	}
+
+	int _t;
+};
 
 int test1()
 {
 	return 10;
 }
-
 void test2()
 {}
 
@@ -47,3 +124,5 @@ int main()
 
 	return 0;
 }
+#endif
+
