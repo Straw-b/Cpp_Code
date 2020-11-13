@@ -1,4 +1,4 @@
-﻿生成启动时间为 2020/11/10 星期二 16:01:06。
+﻿生成启动时间为 2020/11/13 星期五 22:51:49。
      1>项目“E:\Code\test1105\test1105\test1105.vcxproj”在节点 2 上(Build 个目标)。
      1>ClCompile:
          D:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt test.cpp
@@ -10,4 +10,4 @@
 
 生成成功。
 
-已用时间 00:00:02.01
+已用时间 00:00:01.49

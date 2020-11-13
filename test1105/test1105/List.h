@@ -20,6 +20,7 @@ namespace bite
 
 
 
+	// 正向迭代器
 	template<class T>
 	struct ListIterator
 	{
@@ -119,8 +120,9 @@ namespace bite
 			}
 		}
 
-		list(list<T>& L)
+		list(list<T>& L) // 拷贝构造函数
 		{
+			CreatHead();
 			auto it = L.begin();
 			while (it != L.end())
 			{
@@ -149,15 +151,16 @@ namespace bite
 		}
 
 		////////////////////////////////////////// capacity
-		size_t size()
+		size_t size() const
 		{
 			size_t count = 0;
-			auto it = begin();
-			while (it != end())
+			Node* pCur = head->next;
+			while (pCur != head)
 			{
 				++count;
-				++it;
+				pCur = pCur->next;
 			}
+
 			return count;
 		}
 
@@ -166,7 +169,11 @@ namespace bite
 			return head->next == head;
 		}
 
-		void resize(size_t newsize, const T& data)
+
+		// T()
+		// 如果T是内置类型，比如int，int()--->0 ，该默认值都是0
+		// 如果T是自定义类型，比如Date，Date()调用无参构造函数或者全缺省的构造函数
+		void resize(size_t newsize, const T& data = T())
 		{
 			size_t oldsize = size();
 			if (newsize <= oldsize)
@@ -240,7 +247,7 @@ namespace bite
 		{
 			Node* posNode = pos._ptr;
 			Node* pRet = posNode->next;
-			if (pRet != head)
+			if (posNode != head)
 			{
 				posNode->prev->next = posNode->next;
 				posNode->next->prev = posNode->prev;
@@ -295,9 +302,21 @@ void TestMyList1()
 	bite::list<int> L1;
 	bite::list<int> L2(10, 5);
 	cout << L2.size() << endl;
+	auto it = L2.begin();
+	while (it != L2.end())
+	{
+		cout << *it << " ";
+		++it;
+	}
+	cout << endl;
 
 	int array[] = { 1, 2, 3, 4, 5 };
 	bite::list<int> L3(array, array + 5);
+	for (auto e : L3)
+	{
+		cout << e << " ";
+	}
+	cout << endl;
 
 	bite::list<int> L4(L3);
 }
