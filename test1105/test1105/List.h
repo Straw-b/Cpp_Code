@@ -188,7 +188,7 @@ namespace bite
 			}
 		}
 
-		//////////////////////////////////////// access
+		///////////////////////////////////////////////// access
 		T& front()
 		{
 			return *begin();
@@ -231,7 +231,7 @@ namespace bite
 		}
 
 
-		iterator insert(iterator pos, const T& data) // ²åÈë
+		iterator insert(iterator pos, const T& data)
 		{
 			Node* newNode = new Node(data);
 			newNode->next = pos._ptr;
