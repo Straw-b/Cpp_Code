@@ -3,9 +3,9 @@
 using namespace std;
 
 
-#if 0
 // 1.求1 + 2 + 3 + ... + n，
 // 要求不能使用乘除法、for、while、if、else、switch、case等关键字及条件判断语句
+#if 0
 class Sum
 {
 public:
@@ -46,6 +46,7 @@ public:
 	}
 };
 
+// 测试
 //int main()
 //{
 //	Sum s1[3];
@@ -65,11 +66,11 @@ public:
 
 
 
-#if 0
 // 日期类的实现
 // 运算符重载作用：为了提高代码的可读性
 // 函数重载：一些函数在相同作用域、函数名字相同、参数列表不同，与函数返回值类型是否相同无关
 // 注意：哪些运算符不能重载？
+#if 0
 class Date
 {
 public:
@@ -343,21 +344,23 @@ int main()
 
 
 
-#if 0
 // 2.计算日期到天数的转换
 // 根据输入的日期，计算是这一年的第几天
 // 详细描述：
 // 输入某年某月某日，判断这一天是这一年的第几天？
 
+// 假设：2020,9,20	
+// 1. 只需将前8个月每个月的天数加起来	
+// 2. 最后加上9月份的20天	
+// 3. 注意闰年
+#if 0
+#include <iostream>
+using namespace std;
+
 int main()
 {
 	int days[13] = { 0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 	int year, month, day;
-
-	// 假设：2020,9,20
-	// 1. 只需将前8个月每个月的天数加起来
-	// 2. 最后加上9月份的20天
-	// 3. 注意闰年
 
 	// 循环接收多组测试用例
 	while (cin >> year >> month >> day)
@@ -386,9 +389,10 @@ int main()
 
 
 
+
 // 题目：一行有多个单词
 // 需求：输入一行中最后一个单词
-
+#if 0
 int main()
 {
 	char sz[1024] = { 0 };
@@ -420,4 +424,140 @@ int main()
 
 	return 0;
 }
+#endif
 
+
+
+
+
+// 3.日期差值
+// 有两个日期，求两个日期之间的天数，如果两个日期是连续的我们规定他们之间的天数为两天
+// 思路：
+// 1. 分别求出每一个日期与0000年0月1日距离的天数
+// 2. 两个距离天数相减即可得到两个日期相差的天数
+#if 0
+#include <iostream>
+using namespace std;
+
+//平年从1月到n月的天数
+int mon[12] = { 0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334 };
+
+//给出年月日，计算距离0000年0月1日的天数和
+int CountDay(int y, int m, int d)
+{
+	// 计算0-y年的天数
+	int yearDay = y * 365 + y / 4 - y / 100 + y / 400;
+
+	// 计算到0-m月的天数
+	int monthDay = mon[m - 1];
+	if (m > 2 && ((y % 4 == 0 && y % 100 != 0) || y % 400 == 0))
+		monthDay += 1;
+
+	return yearDay + monthDay + d;
+}
+
+int main()
+{
+	int year1, month1, day1;
+	scanf("%4d%2d%2d", &year1, &month1, &day1);
+	int n1 = CountDay(year1, month1, day1);
+
+	int year2, month2, day2;
+	scanf("%4d%2d%2d", &year2, &month2, &day2);
+	int n2 = CountDay(year2, month2, day2);
+
+	cout << abs(n1 - n2) + 1 << endl;
+}
+#endif
+
+
+
+
+
+// 4.打印日期
+// 给出年分m和一年中的第n天，算出第n天是几月几号
+#if 0
+#include <iostream>
+using namespace std;
+
+int main()
+{
+	int year;
+	int day;
+
+	int mon[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+	while (cin >> year >> day)
+	{
+		if (((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0))
+			mon[1] = 29;
+		else
+			mon[1] = 28;
+
+		for (int i = 0; i < 12; i++)
+		{
+			if (day <= mon[i])
+			{
+				printf("%04d-%02d-%02d\n", year, i + 1, day);
+				break;
+			}
+			else
+			{
+				day = day - mon[i];
+			}
+		}
+	}
+	return 0;
+}
+#endif
+
+
+
+
+
+// 5.累加天数
+// 输入第一行表示样例个数m，接下来m行每行四个整数分别表示年月日和累加的天数
+#if 0
+#include<iostream>
+using namespace std;
+
+int main()
+{
+	int n;
+	while (cin >> n)
+	{
+		for (int i = 0; i<n; i++)
+		{
+			int y, m, d, num;
+			int days[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+			cin >> y >> m >> d >> num;
+
+			while (num > 0)
+			{
+				if (num > days[m - 1] - d)
+				{
+					if (y % 400 == 0 || (y % 4 == 0 && y % 100 != 0)) // 来判断这一年是否是闰年
+						days[1] = 29;
+					else
+						days[1] = 28;
+
+					num -= days[m - 1] - d;
+					d = 0;
+					m++;
+					if (m == 13)
+					{
+						y++;
+						m = 1;
+					}
+				}
+				else
+				{
+					d += num;
+					break;
+				}
+			}
+			printf("%4d-%02d-%02d\n", y, m, d);
+		}
+	}
+	return 0;
+}
+#endif
