@@ -225,7 +225,7 @@ int main()
 
 
 
-#if 1
+#if 0
 class A{};
 class B : public A{};
 
@@ -251,11 +251,6 @@ public:
 	{
 		cout << "Base::TestFunc4()" << endl;
 		return nullptr;
-	}
-
-	virtual void TestFunc5()
-	{
-		cout << "Base::TestFunc5()" << endl;
 	}
 };
 
@@ -284,12 +279,6 @@ public:
 		cout << "Derived::TestFunc4()" << endl;
 		return nullptr;
 	}
-
-private:
-	virtual void TestFunc5()
-	{
-		cout << "Derived::TestFunc5()" << endl;
-	}
 };
 
 void TestDynamic(Base* pb)
@@ -302,7 +291,6 @@ void TestDynamic(Base* pb)
 	//pb->TestFunc3();
 
 	pb->TestFunc4();
-	pb->TestFunc5();
 }
 
 int main()
@@ -327,14 +315,15 @@ public:
 		cout << "Base()" << endl;
 	}
 
-	virtual ~Base()
+    virtual ~Base()
 	{
 		cout << "~Base()" << endl;
 	}
+
 	int _b;
 };
 
-class Derived : public Base
+class Derived: public Base
 {
 public:
 	Derived()
@@ -343,7 +332,7 @@ public:
 		cout << "Derived()" << endl;
 	}
 
-	~Derived()
+	~Derived() // 子类析构函数对基类析构函数的重写
 	{
 		if (pb)
 		{
@@ -352,14 +341,55 @@ public:
 			cout << "~Derived()" << endl;
 		}
 	}
-	int* pb;
+	int *pb;
 };
 
 int main()
 {
 	Base* pb = new Derived;
 	delete pb;
-
 	return 0;
 }
 #endif
+
+
+
+
+
+#if 1
+class A{};
+class B : public A{};
+
+class Base
+{
+public:
+	virtual void TestFunc()
+	{
+		cout << "Base::TestFunc()" << endl;
+	}
+};
+
+class Derived :public Base
+{
+private:
+	virtual void TestFunc() // 访问权限可以不同
+	{
+		cout << "Derived::TestFunc()" << endl;
+	}
+};
+
+void TestDynamic(Base* pb)
+{
+	pb->TestFunc();
+}
+
+int main()
+{
+	Base b;
+	Derived d;
+	TestDynamic(&b);
+	TestDynamic(&d);
+	return 0;
+}
+#endif
+
